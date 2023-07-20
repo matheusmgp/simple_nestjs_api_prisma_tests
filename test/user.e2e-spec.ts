@@ -32,7 +32,6 @@ describe('UserController (e2e)', () => {
     let created = await userService.create(user);
 
     const req = await request(app.getHttpServer()).get('/users');
-    console.log('req', req.body, req.statusCode);
     expect(req.statusCode);
     expect(req.body).toEqual(
       expect.objectContaining({
@@ -54,7 +53,6 @@ describe('UserController (e2e)', () => {
   });
   it(`/GET users EMPTY LIST NOTFOUNDEXCEPTION`, async () => {
     const req = await request(app.getHttpServer()).get('/users');
-    console.log('req', req.body, req.statusCode);
     expect(req.statusCode);
     expect(req.body).toEqual({
       statusCode: 404,
@@ -70,7 +68,6 @@ describe('UserController (e2e)', () => {
     let created = await userService.create(user);
 
     const req = await request(app.getHttpServer()).get(`/users/${created.id}`);
-    console.log('req', req.body, req.statusCode);
     expect(req.statusCode);
     expect(req.body).toEqual(
       expect.objectContaining({
@@ -92,7 +89,6 @@ describe('UserController (e2e)', () => {
     const FAKE_ID = '1212';
 
     const req = await request(app.getHttpServer()).get(`/users/${FAKE_ID}`);
-    console.log('req', req.body, req.statusCode);
     expect(req.statusCode);
     expect(req.body).toEqual({
       statusCode: 404,
@@ -145,7 +141,6 @@ describe('UserController (e2e)', () => {
       .put(`/users/${FAKE_ID}`)
       .set('Accept', 'application/json')
       .send(newUser);
-    console.log('req', req.body, req.statusCode);
     expect(req.statusCode);
     expect(req.body).toEqual({
       statusCode: 404,
