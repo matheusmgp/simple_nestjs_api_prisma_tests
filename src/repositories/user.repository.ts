@@ -36,11 +36,14 @@ export class UserRepository {
     });
   }
 
-  async delete(id: number): Promise<User> {
+  async delete(id: string): Promise<User> {
     return this.prisma.user.delete({
       where: {
-        id,
+        id: Number(id),
       },
     });
+  }
+  async deleteAll(): Promise<any> {
+    return this.prisma.user.deleteMany({});
   }
 }
