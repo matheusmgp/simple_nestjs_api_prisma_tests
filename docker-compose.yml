@@ -19,5 +19,4 @@ services:
     restart: always
 
 volumes:
-  postgres-data:
-  pgadmin-data:
+  dbdata:

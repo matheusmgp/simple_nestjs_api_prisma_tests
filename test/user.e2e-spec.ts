@@ -31,8 +31,9 @@ describe('UserController (e2e)', () => {
 
   it(`/GET users`, async () => {
     let created = await userService.create(GENERIC_USER);
+
     const req = await request(app.getHttpServer()).get('/users');
-    expect(req.statusCode);
+    expect(req.statusCode).toBe(200);
     expect(req.body).toEqual(
       expect.objectContaining({
         statusCode: 200,
@@ -53,7 +54,7 @@ describe('UserController (e2e)', () => {
   });
   it(`/GET users empty list []`, async () => {
     const req = await request(app.getHttpServer()).get('/users');
-    expect(req.statusCode);
+    expect(req.statusCode).toBe(404);
     expect(req.body).toEqual({
       statusCode: 404,
       message: ['no records found'],
