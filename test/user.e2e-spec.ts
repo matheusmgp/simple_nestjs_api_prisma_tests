@@ -5,11 +5,16 @@ import { AppModule } from '../src/app.module';
 import { UserService } from '../src/services/user.service';
 import { UserRepository } from '../src/repositories/user.repository';
 import { PrismaService } from '../src/services/prisma.service';
+import { CreateUserDto } from '../src/dtos/users/create-user.dto';
 
 describe('UserController (e2e)', () => {
   let app: INestApplication;
   let userService: UserService;
-
+  const FAKE_ID = '999';
+  const GENERIC_USER: CreateUserDto = {
+    name: 'generic-name',
+    email: 'generic-email@email.com',
+  };
   beforeEach(async () => {
     userService = new UserService(new UserRepository(new PrismaService()));
   });
@@ -25,12 +30,7 @@ describe('UserController (e2e)', () => {
   });
 
   it(`/GET users`, async () => {
-    const user: any = {
-      name: 'generic-name',
-      email: 'generic-email@email.com',
-    };
-    let created = await userService.create(user);
-
+    let created = await userService.create(GENERIC_USER);
     const req = await request(app.getHttpServer()).get('/users');
     expect(req.statusCode);
     expect(req.body).toEqual(
@@ -51,7 +51,7 @@ describe('UserController (e2e)', () => {
 
     await userService.delete(created.id.toString());
   });
-  it(`/GET users EMPTY LIST NOTFOUNDEXCEPTION`, async () => {
+  it(`/GET users empty list []`, async () => {
     const req = await request(app.getHttpServer()).get('/users');
     expect(req.statusCode);
     expect(req.body).toEqual({
@@ -61,12 +61,7 @@ describe('UserController (e2e)', () => {
     });
   });
   it(`/GETBYID user`, async () => {
-    const user: any = {
-      name: 'generic-name',
-      email: 'generic-email@email.com',
-    };
-    let created = await userService.create(user);
-
+    let created = await userService.create(GENERIC_USER);
     const req = await request(app.getHttpServer()).get(`/users/${created.id}`);
     expect(req.statusCode);
     expect(req.body).toEqual(
@@ -85,9 +80,7 @@ describe('UserController (e2e)', () => {
 
     await userService.delete(created.id.toString());
   });
-  it(`/GETBYID user NOTFOUNDEXCEMPTION`, async () => {
-    const FAKE_ID = '1212';
-
+  it(`/GETBYID user NotFoundException`, async () => {
     const req = await request(app.getHttpServer()).get(`/users/${FAKE_ID}`);
     expect(req.statusCode);
     expect(req.body).toEqual({
@@ -97,12 +90,7 @@ describe('UserController (e2e)', () => {
     });
   });
   it(`/UPDATE user`, async () => {
-    const user: any = {
-      name: 'generic-name',
-      email: 'generic-email@email.com',
-    };
-
-    let created = await userService.create(user);
+    let created = await userService.create(GENERIC_USER);
     const newUser: any = {
       name: 'updated',
       email: 'updated@email.com',
@@ -130,17 +118,11 @@ describe('UserController (e2e)', () => {
 
     await userService.delete(created.id.toString());
   });
-  it(`/UPDATE user NOTFOUNDEXCEMPTION`, async () => {
-    const FAKE_ID = '1212';
-    const newUser: any = {
-      name: 'updated',
-      email: 'updated@email.com',
-    };
-
+  it(`/UPDATE user NotFoundException`, async () => {
     const req = await request(app.getHttpServer())
       .put(`/users/${FAKE_ID}`)
       .set('Accept', 'application/json')
-      .send(newUser);
+      .send(GENERIC_USER);
     expect(req.statusCode);
     expect(req.body).toEqual({
       statusCode: 404,
@@ -149,12 +131,7 @@ describe('UserController (e2e)', () => {
     });
   });
   it(`/CREATE user`, async () => {
-    const user: any = {
-      name: 'generic-name',
-      email: 'generic-email@email.com',
-    };
-
-    const req = await request(app.getHttpServer()).post(`/users`).set('Accept', 'application/json').send(user);
+    const req = await request(app.getHttpServer()).post(`/users`).set('Accept', 'application/json').send(GENERIC_USER);
 
     expect(req.statusCode);
     expect(req.body).toEqual(
@@ -162,8 +139,8 @@ describe('UserController (e2e)', () => {
         statusCode: 201,
         data: {
           id: expect.any(Number),
-          email: user.email,
-          name: user.name,
+          email: GENERIC_USER.email,
+          name: GENERIC_USER.name,
         },
         timestamp: expect.any(String),
         message: ['success'],
@@ -173,12 +150,11 @@ describe('UserController (e2e)', () => {
 
     await userService.deleteAll();
   });
-  it(`/CREATE user empty fields`, async () => {
-    const user: any = {
+  it(`/CREATE user with empty fields`, async () => {
+    const req = await request(app.getHttpServer()).post(`/users`).set('Accept', 'application/json').send({
       name: '',
       email: '',
-    };
-    const req = await request(app.getHttpServer()).post(`/users`).set('Accept', 'application/json').send(user);
+    });
     expect(req.statusCode);
     expect(req.body).toEqual({
       statusCode: 400,
