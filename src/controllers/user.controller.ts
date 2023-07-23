@@ -1,12 +1,15 @@
-import { Controller, Get, Param, Post, Body, Put, Delete } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body, Put, Delete, Inject } from '@nestjs/common';
 import { CreateUserDto } from '../dtos/users/create-user.dto';
 import { UpdateUserDto } from '../dtos/users/update-user.dto';
-import { UserService } from '../services/user.service';
+import { IUserService, UserService } from '../services/user.service';
 import { HttpCustomResponse } from '../response/http-custom-response';
 
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService, private readonly httpResponse: HttpCustomResponse) {}
+  constructor(
+    @Inject(IUserService) private readonly userService: IUserService,
+    private readonly httpResponse: HttpCustomResponse
+  ) {}
 
   @Get()
   async getAll(): Promise<any> {

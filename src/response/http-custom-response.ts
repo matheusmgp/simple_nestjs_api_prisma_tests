@@ -1,7 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 
+export interface IHttpCustomResponse {
+  HttpResponse(data: any, method?: string);
+  isNullOrEmpty(data: any): boolean;
+}
 @Injectable()
-export class HttpCustomResponse {
+export class HttpCustomResponse implements IHttpCustomResponse {
   public HttpResponse(data: any, method?: string) {
     if (this.isNullOrEmpty(data)) {
       throw new NotFoundException(['no records found']);
@@ -15,7 +19,7 @@ export class HttpCustomResponse {
     };
   }
 
-  private isNullOrEmpty(data: any): boolean {
+  public isNullOrEmpty(data: any): boolean {
     return data == undefined || data == null || data == '';
   }
 }
