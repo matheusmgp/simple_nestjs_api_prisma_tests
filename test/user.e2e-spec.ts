@@ -3,8 +3,7 @@ import { Test } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { AppModule } from '../src/app.module';
 import { UserService } from '../src/services/user.service';
-import { IUserRepository, UserRepository } from '../src/repositories/user.repository';
-import { PrismaService } from '../src/services/prisma.service';
+import { IUserRepository } from '../src/repositories/user.repository';
 import { CreateUserDto } from '../src/dtos/users/create-user.dto';
 
 describe('UserController (e2e)', () => {

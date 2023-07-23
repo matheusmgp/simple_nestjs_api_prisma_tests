@@ -4,7 +4,7 @@ import { UserController } from './controllers/user.controller';
 import { IUserService, UserService } from './services/user.service';
 import { IUserRepository, UserRepository } from './repositories/user.repository';
 import { IPrismaService, PrismaService } from './services/prisma.service';
-import { HttpCustomResponse } from './response/http-custom-response';
+import { IHttpCustomResponse, HttpCustomResponse } from './response/http-custom-response';
 
 @Module({
   imports: [ConfigModule.forRoot()],
@@ -21,6 +21,10 @@ import { HttpCustomResponse } from './response/http-custom-response';
     {
       provide: IPrismaService,
       useClass: PrismaService,
+    },
+    {
+      provide: IHttpCustomResponse,
+      useClass: HttpCustomResponse,
     },
     UserService,
     UserRepository,

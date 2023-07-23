@@ -1,8 +1,8 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { Prisma, User } from '@prisma/client';
+import { Inject, Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { User } from '@prisma/client';
 import { CreateUserDto } from '../dtos/users/create-user.dto';
 import { UpdateUserDto } from '../dtos/users/update-user.dto';
-import { IUserRepository, UserRepository } from '../repositories/user.repository';
+import { IUserRepository } from '../repositories/user.repository';
 
 export interface IUserService {
   getById(id: string): Promise<User | null>;
@@ -30,6 +30,8 @@ export class UserService implements IUserService {
   }
 
   async create(data: CreateUserDto): Promise<User> {
+    const foundByEmail = await this.repo.getByEmail(data.email);
+    if (foundByEmail) throw new BadRequestException(`Email ${data.email} já cadastrado`);
     return await this.repo.create(data);
   }
 
@@ -37,6 +39,14 @@ export class UserService implements IUserService {
     const retorno = await this.repo.getById(id);
     if (retorno === null) {
       throw new NotFoundException([`Usuario ${id} não encontrado.`]);
+    }
+    const foundByEmail = await this.repo.getByEmail(data.email);
+    if (foundByEmail) throw new BadRequestException(`Email ${data.email} já cadastrado`);
+
+    if (foundByEmail) {
+      if (retorno.id != foundByEmail.id) {
+        throw new BadRequestException(`Email ${data.email} já cadastrado`);
+      }
     }
     return await this.repo.update(id, data);
   }

@@ -4,6 +4,8 @@ export interface IHttpCustomResponse {
   HttpResponse(data: any, method?: string);
   isNullOrEmpty(data: any): boolean;
 }
+
+export const IHttpCustomResponse = Symbol('IHttpCustomResponse');
 @Injectable()
 export class HttpCustomResponse implements IHttpCustomResponse {
   public HttpResponse(data: any, method?: string) {
