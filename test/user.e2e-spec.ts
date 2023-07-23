@@ -2,14 +2,13 @@ import * as request from 'supertest';
 import { Test } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { AppModule } from '../src/app.module';
-import { UserService } from '../src/services/user.service';
+import { IUserService, UserService } from '../src/services/user.service';
 import { IUserRepository } from '../src/repositories/user.repository';
 import { CreateUserDto } from '../src/dtos/users/create-user.dto';
 
 describe('UserController (e2e)', () => {
   let app: INestApplication;
-  let userService: UserService;
-  let userRepository: IUserRepository;
+  let userService: IUserService;
   const FAKE_ID = '999';
   const GENERIC_USER: CreateUserDto = {
     name: 'generic-name',
@@ -22,7 +21,6 @@ describe('UserController (e2e)', () => {
     await userService.deleteAll();
   });
   beforeAll(async () => {
-    userService = new UserService(userRepository);
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule],
       providers: [
